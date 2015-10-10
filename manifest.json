@@ -1,0 +1,6 @@
+{
+	"name": "co-tst",
+	"version": "0.1",
+	"authors": ["Davide Gessa"],
+	"description": "A decentralized contract-oriented middleware based on timed session types"
+}
