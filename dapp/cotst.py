@@ -12,7 +12,7 @@ logger = logging.getLogger(config.APP_NAME)
 
 class cotst (dapp.Dapp):
 	def __init__ (self, chain, db, dht, apimaster):
-		print (core)
+		print (core.TSTCore)
 		self.core = core.TSTCore (chain, db)
 		apip = api.TSTAPI (self.core, dht, apimaster)
 		super (cotst, self).__init__('TST', proto.TSTProto.DAPP_CODE, proto.TSTProto.METHOD_LIST, chain, db, dht, apip)
