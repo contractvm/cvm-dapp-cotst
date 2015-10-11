@@ -212,8 +212,10 @@ class TSTCore (dapp.Core):
 				if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
 					if contracthash in cblist:
 						cblist[contracthash].append (othercontracthash)
+						print ('new compliant for ',contracthash)
 					elif othercontracthash in cblist:
 						cblist[othercontracthash].append (contracthash)
+						print ('new compliant for ',othercontracthash)
 					print (cblist)
 					self.database.set ('ContractsBroadcasted', cblist)
 					logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
