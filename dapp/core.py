@@ -195,6 +195,7 @@ class TSTCore (dapp.Core):
 		# Altrimenti controllo la compliant di questo contratto con i contratti pendenti
 		if not contracthash in cblist:
 			for othercontracthash in cblist:
+				print (othercontracthash, contracthash)
 				if self.checkContractsCompliance (contracthash, othercontracthash):
 					cblist[othercontracthash].append (contracthash)
 					self.database.set ('ContractsBroadcasted', cblist)
