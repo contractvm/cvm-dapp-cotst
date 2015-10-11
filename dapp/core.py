@@ -193,7 +193,7 @@ class TSTCore (dapp.Core):
 		# Update compliant list
 		cblist = self.database.get ('ContractsBroadcasted')
 		# Altrimenti controllo la compliant di questo contratto con i contratti pendenti
-		print (self.database.get ('ContractsPending'),'\n\n',cblist)
+		#print (self.database.get ('ContractsPending'),'\n\n',cblist)
 
 		#if not contracthash in cblist:
 		#	print ('not in cblist')
@@ -213,8 +213,8 @@ class TSTCore (dapp.Core):
 					if contracthash in cblist:
 						cblist[contracthash].append (othercontracthash)
 					elif othercontracthash in cblist:
-
 						cblist[othercontracthash].append (contracthash)
+					print (cblist)
 					self.database.set ('ContractsBroadcasted', cblist)
 					logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
 
