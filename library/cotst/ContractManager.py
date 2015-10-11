@@ -10,7 +10,7 @@ import logging
 import time
 from threading import Thread, Lock
 from libcontractvm import Wallet, ConsensusManager, Log, DappManager
-import ContractException
+from . import ContractException
 
 logger = logging.getLogger('libcontractvm')
 
