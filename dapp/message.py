@@ -2,8 +2,8 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-from ..chain.message import Message
-from .proto import TSTProto
+from contractvmd.chain.message import Message
+from proto import TSTProto
 
 class TSTMessage (Message):
 	def tell (contract, player, expire = 100):

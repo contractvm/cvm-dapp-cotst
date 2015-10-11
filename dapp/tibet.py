@@ -8,7 +8,7 @@ import subprocess
 import uuid
 from lxml import etree
 
-from .. import config
+from contractvmd import config
 
 logger = logging.getLogger(config.APP_NAME)
 
