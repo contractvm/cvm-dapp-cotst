@@ -183,6 +183,7 @@ class TSTCore (dapp.Core):
 
 
 		# Update broadcast list
+		print ('Broadcastlist: ',self.database.get ('ContractsPreBroadcast'), contracthash)
 		if contracthash in self.database.get ('ContractsPreBroadcast'):
 			self.database.listremove ('ContractsPreBroadcast', contracthash)
 
