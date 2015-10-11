@@ -2,7 +2,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-from tibet import Tibet
+from .tibet import Tibet
 from contractvmd import config
 
 import logging

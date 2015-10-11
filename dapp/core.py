@@ -7,8 +7,8 @@ import logging
 from contractvmd import config, dapp
 from contractvmd.proto import Protocol
 
-from sessioninstance import SessionInstance
-from tibet import Tibet
+from .sessioninstance import SessionInstance
+from .tibet import Tibet
 
 logger = logging.getLogger(config.APP_NAME)
 

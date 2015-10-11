@@ -3,7 +3,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 from contractvmd.chain.message import Message
-from proto import TSTProto
+from .proto import TSTProto
 
 class TSTMessage (Message):
 	def tell (contract, player, expire = 100):

@@ -7,8 +7,8 @@ import copy
 from contractvmd import dapp
 from contractvmd.proto import Protocol
 
-from message import TSTMessage
-from tibet import Tibet
+from .message import TSTMessage
+from .tibet import Tibet
 
 class TSTAPI (dapp.API):
 	def __init__ (self, core, dht, api):
