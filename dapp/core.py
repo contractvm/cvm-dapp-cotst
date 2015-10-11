@@ -199,18 +199,20 @@ class TSTCore (dapp.Core):
 		# Altrimenti controllo la compliant di questo contratto con i contratti pendenti
 		#print (self.database.get ('ContractsPending'),'\n\n',cblist)
 
-		#if not contracthash in cblist:
-		#	print ('not in cblist')
-		if True:
-			#for othercontracthash in cblist:
-			#	#print (othercontracthash, contracthash)
-			#	if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
-			#		cblist[othercontracthash].append (contracthash)
-			#		self.database.set ('ContractsBroadcasted', cblist)
-			#		logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
-		# Se il contratto e' stato broadcastato da questo nodo, controllo la compliant con i pendenti
-		#else:
-		#	print ('in cblist')
+		if not contracthash in cblist:
+			for othercontracthash in cblist:
+				if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
+					cblist[othercontracthash].append (contracthash)
+					self.database.set ('ContractsBroadcasted', cblist)
+					logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
+		else:
+			for othercontracthash in self.database.get ('ContractsPending'):
+				if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
+					cblist[contracthash].append (othercontracthash)
+					self.database.set ('ContractsBroadcasted', cblist)
+					logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
+
+		"""if True:
 			for othercontracthash in self.database.get ('ContractsPending'):
 				#print (othercontracthash, contracthash)
 				if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
@@ -223,7 +225,7 @@ class TSTCore (dapp.Core):
 					#print (cblist)
 					self.database.set ('ContractsBroadcasted', cblist)
 					logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
-
+		"""
 
 	def accept (self, sessionhash, contracthash, player, time):
 		if self.database.exists (sessionhash):
