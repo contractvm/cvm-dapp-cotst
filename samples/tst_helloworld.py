@@ -11,6 +11,7 @@ from cotst import ContractManager, ContractException
 
 
 if __name__ == "__main__" and len (sys.argv) == 2:
+    player = sys.argv[1].lower ()
     consensusManager = ConsensusManager.ConsensusManager ('XLT')
     consensusManager.addNode ('http://localhost:8181')
 

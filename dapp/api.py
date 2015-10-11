@@ -13,6 +13,7 @@ from .tibet import Tibet
 class TSTAPI (dapp.API):
 	def __init__ (self, core, dht, api):
 		self.api = api
+		self.core = core
 		rpcmethods = {}
 		rpcmethods["tell"] = {
 			'call': self.method_tell,
@@ -205,13 +206,13 @@ class TSTAPI (dapp.API):
 
 	# Return compliant list of a contract
 	def method_compliantwithcontract (self, contracthash):
-		r = { 'contracts': self.vm.getCompliantWithContract (contracthash) }
+		r = { 'contracts': self.core.getCompliantWithContract (contracthash) }
 		return r
 
 	def method_broadcast_custom (self, thex, temp_id):
 		r = self.api.method_broadcast (thex, temp_id)
 		if r['txid'] != None:
-			self.vm.postBroadcastOfContract (temp_id, r['txid'])
+			self.core.postBroadcastOfContract (temp_id, r['txid'])
 		return r
 
 	# Message-creation operations
@@ -219,19 +220,19 @@ class TSTAPI (dapp.API):
 		message = TSTMessage.tell (contract, player, int (expire))
 		[datahash, outscript, tempid] = message.toOutputScript (self.dht)
 
-		self.vm.preBroadcastOfContract (tempid)
-		r = { 'outscript': outscript, 'datahash': datahash, 'tempid': tempid, 'fee': Protocol.estimateFee (self.vm.getChainCode (), int (expire) * len (contract)) }
+		self.core.preBroadcastOfContract (tempid)
+		r = { 'outscript': outscript, 'datahash': datahash, 'tempid': tempid, 'fee': Protocol.estimateFee (self.core.getChainCode (), int (expire) * len (contract)) }
 		return r
 
 	def method_do (self, session, action, value, nonce, player):
 		message = TSTMessage.do (session, action, value, nonce, player)
 		[datahash, outscript, tempid] = message.toOutputScript (self.dht)
-		return { 'outscript': outscript, 'datahash': datahash, 'tempid': tempid, 'fee': Protocol.estimateFee (self.vm.getChainCode (), int (100) * len (action))  }
+		return { 'outscript': outscript, 'datahash': datahash, 'tempid': tempid, 'fee': Protocol.estimateFee (self.core.getChainCode (), int (100) * len (action))  }
 
 
 	def method_fuse (self, contractp, contractq, player):
-		cp = self.vm.getContract (contractp)['contract']
-		cq = self.vm.getContract (contractq)['contract']
+		cp = self.core.getContract (contractp)['contract']
+		cq = self.core.getContract (contractq)['contract']
 
 		try:
 			if not Tibet.checkContractsCompliance (cp, cq):
@@ -241,11 +242,11 @@ class TSTAPI (dapp.API):
 
 		message = TSTMessage.fuse (contractp, contractq, player)
 		[datahash, outscript, tempid] = message.toOutputScript (self.dht)
-		return { 'outscript': outscript, 'datahash': datahash, 'tempid': tempid, 'fee': Protocol.estimateFee (self.vm.getChainCode (), int (100) * len (player))  }
+		return { 'outscript': outscript, 'datahash': datahash, 'tempid': tempid, 'fee': Protocol.estimateFee (self.core.getChainCode (), int (100) * len (player))  }
 
 
 	def method_accept (self, contractq, player):
-		cq = self.vm.getContract (contractq)['contract']
+		cq = self.core.getContract (contractq)['contract']
 		cp = Tibet.dualContract (cq)
 
 		try:
@@ -256,7 +257,7 @@ class TSTAPI (dapp.API):
 
 		message = TSTMessage.accept (contractq, player)
 		[datahash, outscript, tempid] = message.toOutputScript (self.dht)
-		return { 'outscript': outscript, 'datahash': datahash, 'tempid': tempid, 'fee': Protocol.estimateFee (self.vm.getChainCode (), int (100) * len (player))  }
+		return { 'outscript': outscript, 'datahash': datahash, 'tempid': tempid, 'fee': Protocol.estimateFee (self.core.getChainCode (), int (100) * len (player))  }
 
 
 
@@ -290,21 +291,21 @@ class TSTAPI (dapp.API):
 
 	# State query operations
 	def method_listcontracts (self, type):
-		clist = self.vm.listContracts (type)
+		clist = self.core.listContracts (type)
 		if clist == None:
 			return self.createErrorResponse ('INVALID_LIST_TYPE')
 		else:
 			return clist
 
 	def method_listsessions (self, type):
-		slist = self.vm.listSessions (type)
+		slist = self.core.listSessions (type)
 		if slist == None:
 			return self.createErrorResponse ('INVALID_LIST_TYPE')
 		else:
 			return slist
 
 	def method_getcontract (self, contracthash):
-		c = self.vm.getContract (contracthash)
+		c = self.core.getContract (contracthash)
 		if c == None:
 			return self.createErrorResponse ('CONTRACT_NOT_PRESENT')
 		else:
@@ -313,12 +314,12 @@ class TSTAPI (dapp.API):
 
 
 	def method_getplayerreputation (self, player):
-		c = self.vm.getPlayerReputation (player)
+		c = self.core.getPlayerReputation (player)
 		return {'reputation': c}
 
 
 	def method_getobject (self, objecthash):
-		s = self.vm.inspectObjectType (objecthash)
+		s = self.core.inspectObjectType (objecthash)
 
 		if s == None:
 			return self.createErrorResponse ('OBJECT_NOT_PRESENT')
@@ -334,7 +335,7 @@ class TSTAPI (dapp.API):
 
 
 	def method_getsession (self, sessionhash):
-		s = self.vm.getSession (sessionhash)
+		s = self.core.getSession (sessionhash)
 		if s == None:
 			return self.createErrorResponse ('SESSION_NOT_PRESENT')
 		else:
@@ -343,7 +344,7 @@ class TSTAPI (dapp.API):
 			return ss
 
 	def method_getaction (self, actionhash):
-		a = self.vm.getAction (actionhash)
+		a = self.core.getAction (actionhash)
 		if a == None:
 			return self.createErrorResponse ('ACTION_NOT_PRESENT')
 		else:
@@ -352,4 +353,4 @@ class TSTAPI (dapp.API):
 
 	# Return tstvm informations
 	def method_info (self):
-		return (self.vm.getChainState ())
+		return (self.core.getChainState ())
