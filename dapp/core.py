@@ -40,6 +40,7 @@ class TSTCore (dapp.Core):
 	def preBroadcastOfContract (self, tempid):
 		if not str(tempid) in self.database.get ('ContractsPreBroadcast'):
 			self.database.listappend ('ContractsPreBroadcast', str (tempid))
+		print ('preBroadcastlist: ',self.database.get ('ContractsPreBroadcast'), tempid)
 
 		#print (self.database.get ('ContractsPreBroadcast'))
 
@@ -51,6 +52,8 @@ class TSTCore (dapp.Core):
 		if not str (contracthash) in self.database.get ('ContractsPreBroadcast'):
 			self.database.listappend ('ContractsPreBroadcast', str (contracthash))
 		#print (self.database.get ('ContractsBroadcasted'))
+		print ('postBroadcastlist: ',self.database.get ('ContractsPreBroadcast'), contracthash)
+
 
 	# Return contracts compliant with given contract
 	def getCompliantWithContract (self, contracthash):
