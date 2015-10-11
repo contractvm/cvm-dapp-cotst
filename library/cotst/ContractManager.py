@@ -82,39 +82,7 @@ class ContractManager (DappManager.DappManager):
 
 
 	def _produce_transaction (self, method, arguments):
-		logger.info ('Producing transaction: %s %s', method, str (arguments))
-
-		while True:
-			best = self.consensusManager.getBestNode()
-
-			# Create the transaction
-			res = self.consensusManager.jsonCall (best, method, arguments)
-			#print (res, best)
-			txhash = self.wallet.createTransaction ([res['outscript']], res['fee'])
-
-			if txhash == None:
-				logger.error ('Failed to create transaction')
-				time.sleep (5)
-				continue
-
-			# Broadcast the transaction
-			cid = self.consensusManager.jsonCall (best, 'cotst.broadcast_custom', [txhash, res['tempid']])
-
-			if cid == None:
-				logger.error ('Broadcast failed')
-				time.sleep (5)
-				continue
-
-			cid = cid['txid']
-
-			if cid != None:
-				logger.info ('Broadcasting transaction: %s', cid)
-				return cid
-			else:
-				logger.error ('Failed to produce transaction, retrying in 5 seconds')
-				time.sleep (5)
-
-
+		return super(ContractManager, self)._produce_transaction (method, arguments, 'cotst.broadcast_custom')
 
 
 	def _polling_job (self):
