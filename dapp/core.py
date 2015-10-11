@@ -189,6 +189,7 @@ class TSTCore (dapp.Core):
 			clist = self.database.get ('ContractsBroadcasted')
 			clist[contracthash] = []
 			self.database.set ('ContractsBroadcasted', clist)
+			print ('new owned contract ', clist)
 
 		# Update compliant list
 		cblist = self.database.get ('ContractsBroadcasted')
