@@ -65,7 +65,7 @@ class TSTCore (dapp.Core):
 		contractp = self.database.get (contractphash)
 		contractq = self.database.get (contractqhash)
 
-		print (contractp['contract'], contractq['contract'])
+		#print (contractp['contract'], contractq['contract'])
 
 		# Check contracts compliance
 		self.database.intinc ('ComplianceChecks')
@@ -198,17 +198,17 @@ class TSTCore (dapp.Core):
 		#if not contracthash in cblist:
 		#	print ('not in cblist')
 		if True:
-			for othercontracthash in cblist:
-				print (othercontracthash, contracthash)
-				if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
-					cblist[othercontracthash].append (contracthash)
-					self.database.set ('ContractsBroadcasted', cblist)
-					logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
+			#for othercontracthash in cblist:
+			#	#print (othercontracthash, contracthash)
+			#	if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
+			#		cblist[othercontracthash].append (contracthash)
+			#		self.database.set ('ContractsBroadcasted', cblist)
+			#		logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
 		# Se il contratto e' stato broadcastato da questo nodo, controllo la compliant con i pendenti
 		#else:
 		#	print ('in cblist')
 			for othercontracthash in self.database.get ('ContractsPending'):
-				print (othercontracthash, contracthash)
+				#print (othercontracthash, contracthash)
 				if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
 					cblist[contracthash].append (othercontracthash)
 					self.database.set ('ContractsBroadcasted', cblist)
