@@ -1,0 +1,31 @@
+$def with (contract)
+
+
+<h1>Contract <small>$contract['hash']</small></h1>
+
+<blockquote class="pull-left">
+	$contract['contract']
+</blockquote>
+
+<table class="table h4">
+	<tr><td>Player</td><td><a href="https://chain.so/address/LTCTEST/$contract['player']" target="_blank">$contract['player'] <i class="fa fa-external-link"></i></a></td></tr>
+	<tr><td>Time</td><td>$contract['time']</td></tr>
+	<tr><td>Expire</td><td>$contract['expiry']</td></tr>
+	<tr><td>State</td>
+	<td>
+		$if contract['state'] == 'expired':
+			<span class="label label-danger">Expired</span>
+		$elif contract['state'] == 'fused':
+			<span class="label label-info">Fused</span>
+		$elif contract['state'] == 'pending':
+			<span class="label label-warning">Pending</span>
+		$elif contract['state'] == 'ended':
+			<span class="label label-success">Ended</span>
+	</td></tr>
+	<tr><td>Session</td><td> 
+		$if contract['session'] == None:
+			None
+		$else:
+			<a href="/session/$contract['session']">$contract['session']</a>
+	</td></tr>
+</table>

@@ -1,0 +1,26 @@
+$def with (type, title, classt, list)
+
+<h2>$title <small>($len(list))</small></h2>
+<table class="table table-striped">
+	$for hash in list:
+		<tr>
+			<td><a href="/$type/$hash">$hash</a></td>
+			<td>
+				$if type == 'contract':
+					$if classt == 'fused':
+						<span class="label label-info">Fused</span>
+					$elif classt == 'expired':
+						<span class="label label-danger">Expired</span>
+					$elif classt == 'ended':
+						<span class="label label-success">Ended</span>
+					$elif classt == 'pending':
+						<span class="label label-warning">Pending</span>
+				$if type == 'session':
+					$if classt == 'running':
+						<span class="label label-info">Running</span>
+					$elif classt == 'ended':
+						<span class="label label-success">Ended</span>
+			</td>
+				
+		</tr>
+</table>

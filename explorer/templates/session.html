@@ -1,0 +1,41 @@
+$def with (session, actions)
+
+
+<h1>Session <small>$session['hash']</small></h1>
+
+
+<table class="table">
+	$for c in session['contracts']:
+		<tr>
+			<td>Contract</td><td><a href="/contract/$session['contracts'][c]">$session['contracts'][c]</a></td>
+			<td>Player</td><td><a href="https://chain.so/address/LTCTEST/$c" target="_blank">$c <i class="fa fa-external-link"></i></a> ($session['players'][c])
+				$if session['state']['culpable'][str(session['players'][c])]:
+					<span class="label label-danger">Culpable</span>
+				$elif session['state']['duty'][str(session['players'][c])]:
+					<span class="label label-warning">Duty</span>
+			</td>
+		</tr>
+	<tr><td>Start time</td><td>$session['state']['time_start']</td>
+		<td>Last update time</td><td>$session['state']['time_last']</td>
+	</tr>
+	<tr>
+		<td>End status</td>
+		<td>
+			$if session['state']['end']:
+				<span class="label label-success">True</span>
+			$else:
+				<span class="label label-info">False</span>
+		</td>
+		<td></td><td></td>
+	</tr>
+</table>
+
+<br>
+
+<h2>History of actions <small>($len(actions))</small></h2>
+
+<table class="table">
+	<tr><th>Time</th><th>Player</th><th>Action</th><th>Value</th></tr>
+	$for a in actions
+		<tr><td>$a['time']</td><td>$a['player']</td><td>$a['action']</td><td>$a['value']</td></tr>
+</table>
