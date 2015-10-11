@@ -192,7 +192,7 @@ class TSTCore (dapp.Core):
 			clist = self.database.get ('ContractsBroadcasted')
 			clist[contracthash] = []
 			self.database.set ('ContractsBroadcasted', clist)
-			print ('new owned contract ', clist)
+			#print ('new owned contract ', clist)
 
 		# Update compliant list
 		cblist = self.database.get ('ContractsBroadcasted')
@@ -216,11 +216,11 @@ class TSTCore (dapp.Core):
 				if othercontracthash != contracthash and self.checkContractsCompliance (contracthash, othercontracthash):
 					if contracthash in cblist:
 						cblist[contracthash].append (othercontracthash)
-						print ('new compliant for ',contracthash)
+						#print ('new compliant for ',contracthash)
 					elif othercontracthash in cblist:
 						cblist[othercontracthash].append (contracthash)
-						print ('new compliant for ',othercontracthash)
-					print (cblist)
+						#print ('new compliant for ',othercontracthash)
+					#print (cblist)
 					self.database.set ('ContractsBroadcasted', cblist)
 					logger.info ('Found compliant %s <=> %s',othercontracthash, contracthash)
 
