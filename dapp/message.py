@@ -11,7 +11,7 @@ class TSTMessage (Message):
 		m.Player = player
 		m.Contract = contract
 		m.Method = TSTProto.METHOD_TELL
-		m.PluginCode = TSTProto.PLUGIN_CODE
+		m.DappCode = TSTProto.DAPP_CODE
 		m.Expire = int (expire)
 		return m
 
@@ -23,7 +23,7 @@ class TSTMessage (Message):
 		m.Value = value
 		m.Nonce = nonce
 		m.Method = TSTProto.METHOD_DO
-		m.PluginCode = TSTProto.PLUGIN_CODE
+		m.DappCode = TSTProto.DAPP_CODE
 		return m
 
 	def fuse (contractp, contractq, player):
@@ -32,7 +32,7 @@ class TSTMessage (Message):
 		m.ContractP = contractp
 		m.ContractQ = contractq
 		m.Method = TSTProto.METHOD_FUSE
-		m.PluginCode = TSTProto.PLUGIN_CODE
+		m.DappCode = TSTProto.DAPP_CODE
 		return m
 
 
@@ -42,7 +42,7 @@ class TSTMessage (Message):
 		m.ContractP = contractp
 		m.ContractQ = contractq
 		m.Method = TSTProto.METHOD_FUSE_NET
-		m.PluginCode = TSTProto.PLUGIN_CODE
+		m.DappCode = TSTProto.DAPP_CODE
 		return m
 
 	def accept (contract, player):
@@ -50,7 +50,7 @@ class TSTMessage (Message):
 		m.AcceptedContract = contract
 		m.Player = player
 		m.Method = TSTProto.METHOD_ACCEPT
-		m.PluginCode = TSTProto.PLUGIN_CODE
+		m.DappCode = TSTProto.DAPP_CODE
 		return m
 
 	def toJSON (self):
