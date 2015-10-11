@@ -8,17 +8,13 @@ import json
 import sys
 import logging
 import time
-from threading import Thread
-from threading import Lock
-from libcontractvm import Wallet
-from libcontractvm import ContractException
-from libcontractvm import ConsensusManager
-
-from . import Log
+from threading import Thread, Lock
+from libcontractvm import Wallet, ConsensusManager, Log, DappManager
+import ContractException
 
 logger = logging.getLogger('libcontractvm')
 
-class DappManager:
+class ContractManager (DappManager.DappManager):
 	BLOCKING_TIMEOUT = 5
 	POLLING_TIMEOUT = 15
 
@@ -54,7 +50,7 @@ class DappManager:
 		# Retrive passed contracthash
 		if self.contracthash != None:
 			# Get the contract from node
-			r = self.consensusManager.jsonConsensusCall ('tst.getcontract', [self.contracthash])['result']
+			r = self.consensusManager.jsonConsensusCall ('cotst.getcontract', [self.contracthash])['result']
 
 			if 'error' in r:
 				raise ContractException.ContractNotPresentException ()
@@ -92,7 +88,7 @@ class DappManager:
 
 			elif self.state == ContractManager.STATE_TELL_WAIT:
 				# Get the contract
-				contr = self.consensusManager.jsonConsensusCall ('tst.getcontract', [self.contracthash])['result']
+				contr = self.consensusManager.jsonConsensusCall ('cotst.getcontract', [self.contracthash])['result']
 
 				if not 'error' in contr:
 					self.poll_lock.acquire ()
@@ -107,7 +103,7 @@ class DappManager:
 						logger.info ('State change for contract %s: STATE_PENDING -> STATE_FUSED', self.contracthash)
 
 						# Get the session object
-						self.sessionobject = self.consensusManager.jsonConsensusCall ('tst.getsession', [self.sessionhash])['result']
+						self.sessionobject = self.consensusManager.jsonConsensusCall ('cotst.getsession', [self.sessionhash])['result']
 						self.pid = str (self.sessionobject['players'][self.wallet.getAddress ()])
 					self.poll_lock.release()
 
@@ -119,7 +115,7 @@ class DappManager:
 
 
 			elif self.state == ContractManager.STATE_PENDING_FOR_COMPLIANT:
-				contr = self.consensusManager.jsonConsensusCall ('tst.getcontract', [self.contracthash])['result']
+				contr = self.consensusManager.jsonConsensusCall ('cotst.getcontract', [self.contracthash])['result']
 
 				if not 'error' in contr:
 					if contr['session'] != None:
@@ -128,7 +124,7 @@ class DappManager:
 						continue
 
 				if not 'error' in contr:
-					res = self.consensusManager.jsonCallFromAll ('tst.compliantwithcontract', [self.contracthash])
+					res = self.consensusManager.jsonCallFromAll ('cotst.compliantwithcontract', [self.contracthash])
 					compliants = []
 					for x in res:
 						compliants += x['result']['contracts']
@@ -146,7 +142,7 @@ class DappManager:
 				#logger.debug ('getcontract %s', self.contracthash)
 
 				# Get the contract
-				contr = self.consensusManager.jsonConsensusCall ('tst.getcontract', [self.contracthash])['result']
+				contr = self.consensusManager.jsonConsensusCall ('cotst.getcontract', [self.contracthash])['result']
 
 				if not 'error' in contr:
 					if contr['session'] != None:
@@ -158,7 +154,7 @@ class DappManager:
 						logger.info ('State change for contract %s: STATE_PENDING -> STATE_FUSED', self.contracthash)
 
 						# Get the session object
-						self.sessionobject = self.consensusManager.jsonConsensusCall ('tst.getsession', [self.sessionhash])['result']
+						self.sessionobject = self.consensusManager.jsonConsensusCall ('cotst.getsession', [self.sessionhash])['result']
 						self.pid = str (self.sessionobject['players'][self.wallet.getAddress ()])
 						self.poll_lock.release ()
 
@@ -171,7 +167,7 @@ class DappManager:
 				#logger.debug ('getsession %s', self.sessionhash)
 
 				# Get the session object
-				sob = self.consensusManager.jsonConsensusCall ('tst.getsession', [self.sessionhash])['result']
+				sob = self.consensusManager.jsonConsensusCall ('cotst.getsession', [self.sessionhash])['result']
 
 				self.poll_lock.acquire ()
 				self.sessionobject = sob
@@ -205,46 +201,13 @@ class DappManager:
 			time.sleep (ContractManager.POLLING_TIMEOUT)
 
 
-	def _produce_transaction (self, method, arguments):
-		logger.info ('Producing transaction: %s %s', method, str (arguments))
-
-		while True:
-			best = self.consensusManager.getBestNode()
-
-			# Create the transaction
-			res = self.consensusManager.jsonCall (best, method, arguments)
-			txhash = self.wallet.createTransaction ([res['outscript']], res['fee'])
-
-			if txhash == None:
-				logger.error ('Failed to create transaction')
-				time.sleep (5)
-				continue
-
-			# Broadcast the transaction
-			cid = self.consensusManager.jsonCall (best, 'tst.broadcast_custom', [txhash, res['tempid']])
-
-			if cid == None:
-				logger.error ('Broadcast failed')
-				time.sleep (5)
-				continue
-
-			cid = cid['txid']
-
-			if cid != None:
-				logger.info ('Broadcasting transaction: %s', cid)
-				return cid
-			else:
-				logger.error ('Failed to produce transaction, retrying in 5 seconds')
-				time.sleep (5)
-
-
 	def _execute_do (self, action, value = None):
 		if self.nonce < int (self.sessionobject['state']['nonce_last']):
 			self.nonce = int (self.sessionobject['state']['nonce_last']) + 1
 		else:
 			self.nonce += 1
 
-		return self._produce_transaction ('tst.do', [self.sessionhash, action, value, self.nonce, self.wallet.getAddress ()])
+		return self._produce_transaction ('cotst.do', [self.sessionhash, action, value, self.nonce, self.wallet.getAddress ()])
 
 
 	def _start_thread (self, fun, params):
@@ -257,17 +220,17 @@ class DappManager:
 
 	# Compliance
 	def areCompliant (self, c1, c2):
-		return self.consensusManager.jsonConsensusCall ('tst.checkcompliance', [c1, c2])['result']['compliant']
+		return self.consensusManager.jsonConsensusCall ('cotst.checkcompliance', [c1, c2])['result']['compliant']
 
 	# Static checks
 	def translate (self, contract):
-		return self.consensusManager.jsonConsensusCall ('tst.translatecontract', [contract])['result']['contract']
+		return self.consensusManager.jsonConsensusCall ('cotst.translatecontract', [contract])['result']['contract']
 
 	def validate (self, contract):
-		return self.consensusManager.jsonConsensusCall ('tst.validatecontract', [contract])['result']['valid']
+		return self.consensusManager.jsonConsensusCall ('cotst.validatecontract', [contract])['result']['valid']
 
 	def dual (self, contract):
-		return self.consensusManager.jsonConsensusCall ('tst.dualcontract', [contract])['result']['contract']
+		return self.consensusManager.jsonConsensusCall ('cotst.dualcontract', [contract])['result']['contract']
 
 
 	def getWallet (self):
@@ -283,7 +246,7 @@ class DappManager:
 		return self.consensusManager.getChain ()
 
 	def getTime (self):
-		return int (self.consensusManager.jsonConsensusCall ('tst.info')['result']['time'])
+		return int (self.consensusManager.jsonConsensusCall ('cotst.info')['result']['time'])
 
 	def getSessionStartTime (self):
 		if self.session == None:
@@ -357,7 +320,7 @@ class DappManager:
 
 
 	def tell (self, contract):
-		cid = self._produce_transaction ('tst.tell', [contract, self.wallet.getAddress (), 100])
+		cid = self._produce_transaction ('cotst.tell', [contract, self.wallet.getAddress (), 100])
 		if cid != None:
 			self.poll_lock.acquire ()
 			self.state = ContractManager.STATE_TELL_WAIT
@@ -373,7 +336,7 @@ class DappManager:
 		if self.isFused ():
 			raise ContractException.ContractAlreadyFusedException ()
 		else:
-			sid = self._produce_transaction ('tst.fuse', [self.contracthash, contractqhash, self.wallet.getAddress ()])
+			sid = self._produce_transaction ('cotst.fuse', [self.contracthash, contractqhash, self.wallet.getAddress ()])
 			if sid != None:
 				self.poll_lock.acquire ()
 				self.sessionhash = sid
@@ -389,7 +352,7 @@ class DappManager:
 		if self.isFused ():
 			raise ContractException.ContractAlreadyFusedException ()
 		else:
-			sid = self._produce_transaction ('tst.accept', [contractqhash, self.wallet.getAddress ()])
+			sid = self._produce_transaction ('cotst.accept', [contractqhash, self.wallet.getAddress ()])
 			if sid != None:
 				self.poll_lock.acquire ()
 				self.sessionhash = sid

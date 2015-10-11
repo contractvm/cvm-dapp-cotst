@@ -10,11 +10,11 @@ from . import core, api, proto
 logger = logging.getLogger(config.APP_NAME)
 
 
-class TSTDapp (dapp.Dapp):
+class cotst (dapp.Dapp):
 	def __init__ (self, chain, db, dht, apimaster):
 		self.core = core.TSTCore (chain, db)
 		apip = api.TSTAPI (self.core, dht, apimaster)
-		super (TSTDapp, self).__init__('TST', proto.TSTProto.DAPP_CODE, proto.TSTProto.METHOD_LIST, chain, db, dht, apip)
+		super (cotst, self).__init__('TST', proto.TSTProto.DAPP_CODE, proto.TSTProto.METHOD_LIST, chain, db, dht, apip)
 
 	def handleMessage (self, m):
 		if m.Method == proto.TSTProto.METHOD_TELL:

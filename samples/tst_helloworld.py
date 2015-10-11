@@ -4,28 +4,15 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 # Helloworld example
-import os
 import sys
 import config
-import time
-import subprocess
-from libcontractvm import Wallet, WalletChainSo, WalletNode, ContractManager, ContractException, ConsensusManager
-import cvmutils
+from libcontractvm import Wallet, WalletChainSo, WalletNode, ConsensusManager
+from cotst import ContractManager, ContractException
 
 
 if __name__ == "__main__" and len (sys.argv) == 2:
-    player = sys.argv[1].lower ()
-
-    if player == 'spawn':
-        cvmutils.spawn (3)
-        while True:
-            time.sleep (5)
-        sys.exit ()
-        
     consensusManager = ConsensusManager.ConsensusManager ('XLT')
-
-    for x in range (3):
-        consensusManager.addNode ('http://localhost:' + str (2818 + x))
+    consensusManager.addNode ('http://localhost:8181')
 
     cm = ContractManager.ContractManager (consensusManager,
             wallet=WalletNode.WalletNode (chain='XLT', url=config.WALLET_NODE_URL, wallet_file='data/test_xltnode_'+player[0]+'.wallet'))
@@ -57,4 +44,4 @@ if __name__ == "__main__" and len (sys.argv) == 2:
         cm.send ('planet', 'world')
 
 elif __name__ == "__main__":
-    print ('usage: python3',sys.argv[0],'[spawn|alice|bob]')
+    print ('usage: python3',sys.argv[0],'[alice|bob]')
