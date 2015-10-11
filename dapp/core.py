@@ -65,6 +65,8 @@ class TSTCore (dapp.Core):
 		contractp = self.database.get (contractphash)
 		contractq = self.database.get (contractqhash)
 
+		print (contractp['contract'], contractq['contract'])
+
 		# Check contracts compliance
 		self.database.intinc ('ComplianceChecks')
 		if not Tibet.checkContractsCompliance (contractp['contract'], contractq['contract']):
@@ -200,6 +202,7 @@ class TSTCore (dapp.Core):
 		# Se il contratto e' stato broadcastato da questo nodo, controllo la compliant con i pendenti
 		else:
 			for othercontracthash in (cblist + self.database.get ('ContractsPending')):
+				print (othercontracthash, contracthash)
 				if self.checkContractsCompliance (contracthash, othercontracthash):
 					cblist[contracthash].append (othercontracthash)
 					self.database.set ('ContractsBroadcasted', cblist)
