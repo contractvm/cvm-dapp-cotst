@@ -81,8 +81,8 @@ class ContractManager (DappManager.DappManager):
 		self.nonce = 0
 
 
-	def _produce_transaction (self, method, arguments):
-		return super(ContractManager, self)._produce_transaction (method, arguments, 'cotst.broadcast_custom')
+	def produceTransaction (self, method, arguments):
+		return super(ContractManager, self).produceTransaction (method, arguments, 'cotst.broadcast_custom')
 
 
 	def _polling_job (self):
@@ -211,7 +211,7 @@ class ContractManager (DappManager.DappManager):
 		else:
 			self.nonce += 1
 
-		return self._produce_transaction ('cotst.do', [self.sessionhash, action, value, self.nonce, self.wallet.getAddress ()])
+		return self.produceTransaction ('cotst.do', [self.sessionhash, action, value, self.nonce, self.wallet.getAddress ()])
 
 
 	def _start_thread (self, fun, params):
@@ -324,7 +324,7 @@ class ContractManager (DappManager.DappManager):
 
 
 	def tell (self, contract):
-		cid = self._produce_transaction ('cotst.tell', [contract, self.wallet.getAddress (), 100])
+		cid = self.produceTransaction ('cotst.tell', [contract, self.wallet.getAddress (), 100])
 		if cid != None:
 			self.poll_lock.acquire ()
 			self.state = ContractManager.STATE_TELL_WAIT
@@ -340,7 +340,7 @@ class ContractManager (DappManager.DappManager):
 		if self.isFused ():
 			raise ContractException.ContractAlreadyFusedException ()
 		else:
-			sid = self._produce_transaction ('cotst.fuse', [self.contracthash, contractqhash, self.wallet.getAddress ()])
+			sid = self.produceTransaction ('cotst.fuse', [self.contracthash, contractqhash, self.wallet.getAddress ()])
 			if sid != None:
 				self.poll_lock.acquire ()
 				self.sessionhash = sid
@@ -356,7 +356,7 @@ class ContractManager (DappManager.DappManager):
 		if self.isFused ():
 			raise ContractException.ContractAlreadyFusedException ()
 		else:
-			sid = self._produce_transaction ('cotst.accept', [contractqhash, self.wallet.getAddress ()])
+			sid = self.produceTransaction ('cotst.accept', [contractqhash, self.wallet.getAddress ()])
 			if sid != None:
 				self.poll_lock.acquire ()
 				self.sessionhash = sid
