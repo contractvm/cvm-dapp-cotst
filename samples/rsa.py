@@ -9,7 +9,8 @@ import os
 import sys
 import time
 import subprocess
-from libcontractvm import Wallet, WalletChainSo, WalletNode, ContractManager, ContractException, ConsensusManager
+from libcontractvm import Wallet, WalletExplorer, ConsensusManager
+from cotst import ContractManager, ContractException
 import cvmutils
 
 
@@ -22,16 +23,15 @@ if __name__ == "__main__" and len (sys.argv) == 2:
             time.sleep (5)
         sys.exit ()
         
-    consensusManager = ConsensusManager.ConsensusManager ('XLT')
+    consensusManager = ConsensusManager.ConsensusManager ()
 
     for x in range (3):
         consensusManager.addNode ('http://localhost:' + str (2818 + x))
 
     if player.find ('slave') != -1:
-        wallet = WalletNode.WalletNode (chain='XLT', url=config.WALLET_NODE_URL, wallet_file='data/test_xltnode_a.wallet')
+        wallet=WalletExplorer.WalletExplorer (wallet_file='testa.wallet'))
     else:
-        wallet = WalletNode.WalletNode (chain='XLT', url=config.WALLET_NODE_URL, wallet_file='data/test_xltnode_b.wallet')
-        
+	wallet=WalletExplorer.WalletExplorer (wallet_file='testb.wallet'))        
     cm = ContractManager.ContractManager (consensusManager, wallet=wallet)
     
     print (player, 'Chain:', cm.getChainCode ())

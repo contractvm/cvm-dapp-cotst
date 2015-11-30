@@ -7,7 +7,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(name='cotst',
-	version='0.0.1',
+	version='0.1',
 	description='CoTST dapp library',
 	author='Davide Gessa',
 	setup_requires='setuptools',

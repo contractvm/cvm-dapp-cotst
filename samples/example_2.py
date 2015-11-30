@@ -10,27 +10,25 @@ import os
 import sys
 import time
 import subprocess
-from libcontractvm import Wallet, WalletChainSo, WalletNode, ContractManager, ContractException, ConsensusManager
+from libcontractvm import Wallet, WalletExplorer
+from cotst import ContractManager, ContractException, ConsensusManager
 import cvmutils
 
 
 if __name__ == "__main__":
     n = 2
-    chain = 'XLT'
 
     cvmutils.spawn (n)
-    consensusManager = ConsensusManager.ConsensusManager (chain)
+    consensusManager = ConsensusManager.ConsensusManager ()
 
     for x in range (n):
         consensusManager.addNode ('http://localhost:' + str (2818 + x))
 
-    #cm1 = ContractManager.ContractManager (consensusManager,
-    #        wallet=WalletChainSo.WalletChainSo (chain=chain, wallet_file='data/test_'+chain.lower ()+'_a.wallet'))
     cm1 = ContractManager.ContractManager (consensusManager,
-            wallet=WalletNode.WalletNode (chain=chain, url="http://test:testpass@localhost:18332", wallet_file='data/test_'+chain.lower ()+'node_a.wallet'))
+            wallet=WalletExplorer.WalletExplorer (wallet_file='test.wallet'))
     cm2 = ContractManager.ContractManager (consensusManager,
-            wallet=WalletNode.WalletNode (chain=chain, url="http://test:testpass@localhost:18332", wallet_file='data/test_'+chain.lower ()+'node_b.wallet'))
-
+            wallet=WalletExplorer.WalletExplorer (wallet_file='test.wallet'))
+    
     print ('1 Chain:', cm1.getChainCode ())
     print ('1 Address:', cm1.getWallet ().getAddress ())
     print ('1 Network time:', cm1.getTime ())

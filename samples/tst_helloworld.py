@@ -6,17 +6,17 @@
 # Helloworld example
 import sys
 import config
-from libcontractvm import Wallet, WalletChainSo, WalletNode, ConsensusManager
+from libcontractvm import Wallet, WalletExplorer, ConsensusManager
 from cotst import ContractManager, ContractException
 
 
 if __name__ == "__main__" and len (sys.argv) == 2:
     player = sys.argv[1].lower ()
-    consensusManager = ConsensusManager.ConsensusManager ('XLT')
+    consensusManager = ConsensusManager.ConsensusManager ()
     consensusManager.addNode ('http://localhost:8181')
 
     cm = ContractManager.ContractManager (consensusManager,
-            wallet=WalletNode.WalletNode (chain='XLT', url=config.WALLET_NODE_URL, wallet_file='data/test_xltnode_'+player[0]+'.wallet'))
+            wallet=WalletExplorer.WalletExplorer (wallet_file='test.wallet'))
     
     print (player, 'Chain:', cm.getChainCode ())
     print (player, 'Address:', cm.getWallet ().getAddress ())
